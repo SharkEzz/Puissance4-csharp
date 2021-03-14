@@ -29,6 +29,18 @@ namespace p4.Game
             }
         }
 
+        public Box GetBottomColumnBox(uint x, uint y)
+        {
+            uint newY = y;
+
+            for(uint i = newY ; newY + 1 < this.cY && this.GetBoxAtPos(x, newY + 1).IsEmpty; i++)
+            {
+                newY = i;
+            }
+
+            return this.GetBoxAtPos(x, newY);
+        }
+
         public Box GetBoxAtPos(uint x, uint y)
         {
             return this.board[(int)y][(int)x];

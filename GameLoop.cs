@@ -58,6 +58,7 @@ namespace p4
                 Box b = this.GetBoxAtPos((uint)e.X, (uint)e.Y);
                 if(b.IsEmpty)
                 {
+                    b = this.grid.GetBottomColumnBox(b.iX, b.iY);
                     b.Fill(new Pawn(this.GetColorByTurn()));
                     this.shouldRender = true;
                     this.turn++;
