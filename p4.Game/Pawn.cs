@@ -12,27 +12,9 @@ namespace p4.Game
             set => this.color = value;
         }
 
-        public enum AvailablePawnColor {
-            Red,
-            Yellow
-        }
-
-        public Color GetPawnColor(AvailablePawnColor color)
+        public Pawn(Color color)
         {
-            switch(color)
-            {
-                case AvailablePawnColor.Red:
-                    return Color.Red;
-                case AvailablePawnColor.Yellow:
-                    return Color.Yellow;
-                default:
-                    return Color.Black;
-            }
-        }
-
-        public Pawn(AvailablePawnColor color)
-        {
-            this.color = this.GetPawnColor(color);
+            this.color = color;
         }
     }
 }

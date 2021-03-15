@@ -13,6 +13,7 @@ namespace p4
         private Grid grid;
         private RenderWindow window;
         private uint turn = 0;
+        private bool isFinished = false;
 
         public GameLoop()
         {
@@ -35,12 +36,21 @@ namespace p4
                 {
                     this.window.Clear();
 
-                    for(uint y = 0; y < this.grid.cY; y++)
+                    if(!this.isFinished)
                     {
-                        for(uint x = 0; x < this.grid.cX; x++)
+                        for(uint y = 0; y < this.grid.cY; y++)
                         {
-                            this.window.Draw(this.grid.GetBoxAtPos(x, y).Shape);
+                            for(uint x = 0; x < this.grid.cX; x++)
+                            {
+                                this.window.Draw(this.grid.GetBoxAtPos(x, y).Shape);
+                            }
                         }
+                    }
+                    else
+                    {
+                        this.window.Draw(new CircleShape(50f){
+                            FillColor = this.GetColorByTurn()
+                        });
                     }
 
                     this.window.Display();
@@ -53,13 +63,15 @@ namespace p4
         {
             RenderWindow window = (RenderWindow)sender;
 
-            if(e.Button == Mouse.Button.Left)
+            if(e.Button == Mouse.Button.Left && !this.isFinished && e.X < this.grid.cX * (Box.radius * 2) && e.Y < this.grid.cY * (Box.radius * 2))
             {
                 Box b = this.GetBoxAtPos((uint)e.X, (uint)e.Y);
                 if(b.IsEmpty)
                 {
                     b = this.grid.GetBottomColumnBox(b.iX, b.iY);
                     b.Fill(new Pawn(this.GetColorByTurn()));
+                    if(this.grid.CheckWinner(b.iX, b.iY))
+                        this.isFinished = true;
                     this.shouldRender = true;
                     this.turn++;
                 }
@@ -67,6 +79,12 @@ namespace p4
                 {
                     Console.WriteLine("Box at x:{0} y:{1} not empty", b.iX, b.iY);
                 }
+            }
+            else if(this.isFinished)
+            {
+                this.grid = new Grid();
+                this.turn = 0;
+                this.isFinished = false;
             }
         }
 
@@ -85,15 +103,15 @@ namespace p4
             return this.grid.GetBoxAtPos(posX, posY);
         }
 
-        private Pawn.AvailablePawnColor GetColorByTurn()
+        private Color GetColorByTurn()
         {
             if(this.turn % 2 == 0)
             {
-                return Pawn.AvailablePawnColor.Red;
+                return Color.Red;
             }
             else
             {
-                return Pawn.AvailablePawnColor.Yellow;
+                return Color.Yellow;
             }
         }
     }
